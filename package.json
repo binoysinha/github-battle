@@ -1,11 +1,11 @@
 {
-  "name": "github-battle",
+  "name": "redbus-helper",
   "version": "1.0.0",
-  "description": "A react app",
+  "description": "Conductor App",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "rm -rf ./dist && webpack --config webpack.config.dist.js -p",
+    "build": "webpack --config webpack.config.dist.js -p",
     "deploy": "npm run build && firebase deploy",
     "firebase-init": "firebase login && firebase init"
   },
@@ -40,12 +40,18 @@
   },
   "dependencies": {
     "animated": "^0.2.0",
+    "axios": "^0.16.2",
+    "copy-webpack-plugin": "^4.0.1",
+    "firebase": "^4.3.0",
+    "logrocket": "^0.5.1",
     "prop-types": "^15.5.10",
     "query-string": "^4.3.4",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-hot-loader": "next",
     "react-router-dom": "^4.1.1",
-    "react-transition-group": "^1.2.0"
+    "react-transition-group": "^1.2.0",
+    "workbox-sw": "^1.0.1",
+    "workbox-webpack-plugin": "^1.0.1"
   }
 }

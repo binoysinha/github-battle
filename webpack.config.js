@@ -1,13 +1,17 @@
 const webpack = require("webpack");
-const { resolve } = require("path");
+const {
+	resolve, join
+} = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const WorkboxPlugin = require('workbox-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
 	context: resolve(__dirname, "src"),
 	devtool: "inline-source-map",
 
 	entry: [
-        "babel-polyfill",
+		"babel-polyfill",
 		"react-hot-loader/patch",
 		"webpack/hot/only-dev-server",
 		"./index.js"
@@ -26,26 +30,25 @@ module.exports = {
 	},
 
 	module: {
-		rules: [
-			{
+		rules: [{
 				test: /\.js?$/,
-				use: [
-					{
-						loader: "babel-loader",
-						options: {
-							babelrc: false,
-							presets: [
-								["env", { modules: false }],
-								"react",
-								"stage-0"
-							],
-							plugins: [
-								"react-hot-loader/patch",
-								"transform-decorators-legacy"
-							]
-						}
+				use: [{
+					loader: "babel-loader",
+					options: {
+						babelrc: false,
+						presets: [
+							["env", {
+								modules: false
+							}],
+							"react",
+							"stage-0"
+						],
+						plugins: [
+							"react-hot-loader/patch",
+							"transform-decorators-legacy"
+						]
 					}
-				],
+				}],
 				exclude: /node_modules/
 			},
 			{
@@ -95,6 +98,20 @@ module.exports = {
 		new webpack.NoEmitOnErrorsPlugin(),
 		new HtmlWebpackPlugin({
 			template: "index.html"
+		}),
+		new CopyWebpackPlugin([{
+			from: require.resolve('workbox-sw'),
+			to: 'workbox-sw.prod.js'
+		}]),
+		new WorkboxPlugin({
+			globDirectory: './dist',
+			globPatterns: [
+				join('**/*.{js,css,png,jpg,gif}'),
+				join('index.html')
+			],
+			swSrc: './src/sw.js',
+			swDest: './dist/sw.js',
+			globIgnores: ['workbox-sw.prod.js']
 		})
 	],
 

@@ -1,0 +1,23 @@
+.filter-block {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 80%;
+    background-color: white;
+    z-index: 999;
+    box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2), 0 4px 20px 0 rgba(0,0,0,0.19);
+    
+    ul {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        li {
+            padding: 20px;
+            border-bottom: 1px solid black;
+        }
+    }
+}
+.hide {
+    display: none;
+}

@@ -1,7 +1,12 @@
 const webpack = require("webpack");
-const { resolve } = require("path");
+const {
+	resolve,
+	join
+} = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+const WorkboxPlugin = require('workbox-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
 	context: resolve(__dirname, "src"),
@@ -9,7 +14,7 @@ module.exports = {
 
 	entry: {
 		app: [
-            "babel-polyfill",
+			"babel-polyfill",
 			"whatwg-fetch",
 			"./index.js"
 		],
@@ -22,26 +27,25 @@ module.exports = {
 	},
 
 	module: {
-		rules: [
-			{
+		rules: [{
 				test: /\.js?$/,
-				use: [
-					{
-						loader: "babel-loader",
-						options: {
-							babelrc: false,
-							presets: [
-								["env", { modules: false }],
-								"react",
-								"stage-0"
-							],
-							plugins: [
-								"react-hot-loader/patch",
-								"transform-decorators-legacy"
-							]
-						}
+				use: [{
+					loader: "babel-loader",
+					options: {
+						babelrc: false,
+						presets: [
+							["env", {
+								modules: false
+							}],
+							"react",
+							"stage-0"
+						],
+						plugins: [
+							"react-hot-loader/patch",
+							"transform-decorators-legacy"
+						]
 					}
-				],
+				}],
 				exclude: /node_modules/
 			},
 			{
@@ -108,6 +112,20 @@ module.exports = {
 		}),
 		new webpack.DefinePlugin({
 			"process.env.NODE_ENV": JSON.stringify("production")
+		}),
+		new CopyWebpackPlugin([{
+			from: require.resolve('workbox-sw'),
+			to: 'workbox-sw.prod.js'
+		}]),
+		new WorkboxPlugin({
+			globDirectory: './dist',
+			globPatterns: [
+				join('**/*.{js,css,png,jpg,gif}'),
+				join('index.html')
+			],
+			swSrc: './src/sw.js',
+			swDest: './dist/sw.js',
+			globIgnores: ['workbox-sw.prod.js']
 		})
 	],
 

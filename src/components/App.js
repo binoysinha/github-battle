@@ -1,44 +1,58 @@
-import '../styles/App.scss';
 import React, { Component } from 'react';
 import { Switch, Route, matchPath } from "react-router-dom";
 
 import Home from './Home';
-import NavBar from './Navbar'
-import Battle from './Battle';
-import Results from './Results';
-import Popular from './Popular';
-import NotFound from './dumbComponents/NotFound';
+import ThreadDisplay from './ThreadDisplay/components/ThreadDisplay';
+import Login from './Login/components/Login';
+import Header from './Header/components/Header';
+import User from './User/components/User';
+
+import './App.css';
+import firebase from 'firebase/app';
+import 'firebase/database';
+import { fbConfig} from './data';
 
 class App extends Component {
+	constructor(props) {
+		super(props)
+		const config = fbConfig;
+    this.app = firebase.initializeApp(config);
+    this.database = this.app.database();
+	}
+
   render() {
     return (
-			<div className="App-container">
-				<NavBar />
+			<div className="container">
+				<Header />
 				<Route
 					render={({ location }) => (
 						<Switch key={location.key} location={location}>
-							<Route
+						<Route
 								exact
 								path="/"
-								component={Home}
+								component={Login}
 							/>
 							<Route
 								exact
-								path="/battle"
-                component={Battle}
-							/>
-              <Route
+								path="/home"
+								render={(props) => (
+										<Home {...props}  database={this.database}/>
+								)}/>
+								<Route
 								exact
-								path="/battle/results"
-                component={Results}
-							
+								path="/user/:id"
+								render={(props) => (
+										<User {...props} database={this.database} />
+								)}/>
 							/>
 							<Route
 								exact
-								path="/popular"
-                component={Popular}
+								path="/chat"
+								render={(props) => (
+										<ThreadDisplay {...props} database={this.database}/>
+								)}/>
+                />
 							/>
-              <Route component={NotFound} />
 						</Switch>
 					)}
 				/>
